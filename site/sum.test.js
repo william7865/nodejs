@@ -1,7 +1,5 @@
-// cart.test.js
 
-// Importez les fonctions que vous souhaitez tester
-const { getCart, addToCart, removeFromCart, clearCart, getTotals } = require('./cart');
+const { getCart, addToCart, removeFromCart, clearCart, getTotals } = require('./sum');
 
 // Mock de localStorage pour simuler le comportement dans un environnement de test
 const localStorageMock = {
