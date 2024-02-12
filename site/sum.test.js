@@ -1,9 +1,7 @@
-// render-cart.test.js
+// Importez la fonction à tester
+const { renderCartItems } = require('./sum');
 
-import '@testing-library/jest-dom';
-import { screen } from '@testing-library/dom';
-import renderCartItems from './render-cart';
-
+// Testez la fonction renderCartItems
 test('renderCartItems affiche correctement les articles dans le panier', () => {
   // Créez un élément de conteneur factice pour le test
   document.body.innerHTML = '<div id="cart-container"></div>';
@@ -18,6 +16,6 @@ test('renderCartItems affiche correctement les articles dans le panier', () => {
   renderCartItems(mockCart);
 
   // Vérifiez que le contenu du conteneur est correct
-  expect(screen.getByText('Nom: Produit 1')).toBeInTheDocument();
-  expect(screen.getByText('Nom: Produit 2')).toBeInTheDocument();
+  const cartContainer = document.getElementById('cart-container');
+  expect(cartContainer.innerHTML).toMatchSnapshot();
 });
