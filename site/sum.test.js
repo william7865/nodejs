@@ -1,101 +1,97 @@
 // sum.test.js
 const sum = require('./sum'); // Utilisation du chemin relatif sans extension
 javascript
-import { getCart, addToCart, removeFromCart, clearCart, getTotals } from './path/to/cartModule';
+import { getCart, addToCart, removeFromCart, clearCart, getTotals } from './cart'; // adjust the import path based on actual file structure
+import localStorage from 'localStorage';
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store = {};
-  return {
-    getItem(key) {
-      return store[key] || null;
-    },
-    setItem(key, value) {
-      store[key] = value;
-    },
-    removeItem(key) {
-      delete store[key];
-    },
-    clear() {
-      store = {};
-    }
-  };
-})();
+// Mock the console.log to keep test output clean
+global.console = {
+  log: jest.fn(),
+};
 
-Object.defineProperty(global, 'localStorage', {
-  value: localStorageMock
-});
+// Mock the localStorage
+jest.mock('localStorage', () => ({
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+}));
 
-beforeEach(() => {
-  localStorage.clear();
-});
-
-describe('Cart functionality', () => {
-  test('getCart should return an empty array when the cart is empty', () => {
+// Tests for getCart
+describe('getCart', () => {
+  it('should return empty array when cart is null', () => {
+    localStorage.getItem.mockReturnValueOnce(null);
     expect(getCart()).toEqual([]);
   });
 
-  test('addToCart should add a new product to the cart', () => {
-    const product = { id: 1, price: 10 };
-    addToCart(product);
+  it('should return content of the cart', () => {
+    const cart = [{ id: 1, quantity: 2 }];
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify(cart));
+    expect(getCart()).toEqual(cart);
+  });
+});
 
-    expect(getCart()).toEqual([{ ...product, quantity: 1 }]);
+// Tests for addToCart
+describe('addToCart', () => {
+  const product = { id: 1, price: 10 };
+  const extendedProduct = { ...product, quantity: 1 };
+
+  it('should add new product to the empty cart', () => {
+    localStorage.getItem.mockReturnValueOnce(null);
+    addToCart(product);
+    expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify([extendedProduct]));
   });
 
-  test('addToCart should increment quantity for existing product', () => {
-    const product = { id: 1, price: 10 };
+  it('should increase the quantity if product already exists', () => {
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify([extendedProduct]));
     addToCart(product);
-    addToCart(product);
-
-    expect(getCart()).toEqual([{ ...product, quantity: 2 }]);
+    expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify([{ ...extendedProduct, quantity: 2 }]));
   });
+});
 
-  test('removeFromCart should decrement product quantity', () => {
-    const product = { id: 1, price: 10 };
-    addToCart(product);
-    addToCart(product);
+// Tests for removeFromCart
+describe('removeFromCart', () => {
+  const product = { id: 1, price: 10, quantity: 2 };
+
+  it('should do nothing if product is not in the cart', () => {
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify([]));
     removeFromCart(product);
-
-    expect(getCart()).toEqual([{ ...product, quantity: 1 }]);
+    expect(localStorage.setItem).not.toHaveBeenCalled();
   });
 
-  test('removeFromCart should remove product when quantity is 1', () => {
-    const product = { id: 1, price: 10 };
-    addToCart(product);
+  it('should decrease the quantity if quantity is more than 1', () => {
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify([product]));
     removeFromCart(product);
-
-    expect(getCart()).toEqual([]);
+    expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify([{ ...product, quantity: 1 }]));
   });
 
-  test('removeFromCart should not modify cart if product is not found', () => {
-    const product = { id: 1, price: 10 };
-    addToCart(product);
-    removeFromCart({ id: 2 }); // Product with id 2 is not in the cart
-
-    expect(getCart()).toEqual([{ ...product, quantity: 1 }]);
+  it('should remove the product if quantity is 1', () => {
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify([{ ...product, quantity: 1 }]));
+    removeFromCart(product);
+    expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify([]));
   });
+});
 
-  test('clearCart should remove all items from the cart', () => {
-    const product = { id: 1, price: 10 };
-    addToCart(product);
+// Tests for clearCart
+describe('clearCart', () => {
+  it('should clear the cart', () => {
     clearCart();
+    expect(localStorage.removeItem).toHaveBeenCalledWith('cart');
+  });
+});
 
-    expect(getCart()).toEqual([]);
+// Tests for getTotals
+describe('getTotals', () => {
+  it('should return correct total price and quantity', () => {
+    const cart = [
+      { id: 1, price: 10, quantity: 2 },
+      { id: 2, price: 20, quantity: 1 },
+    ];
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify(cart));
+    expect(getTotals()).toEqual({ total: 40, items: 3 });
   });
 
-  test('getTotals should return total price and total quantity of the cart', () => {
-    const product1 = { id: 1, price: 10 };
-    const product2 = { id: 2, price: 5, quantity: 2 };
-
-    addToCart(product1);
-    addToCart(product2); // Quantity is not provided here but should default to 1
-    addToCart(product2);
-
-    const totals = getTotals();
-    expect(totals).toEqual({ total: 20, items: 3 });
-  });
-
-  test('getTotals should return zeros when the cart is empty', () => {
+  it('should return zeros when cart is empty', () => {
+    localStorage.getItem.mockReturnValueOnce(null);
     expect(getTotals()).toEqual({ total: 0, items: 0 });
   });
 });
