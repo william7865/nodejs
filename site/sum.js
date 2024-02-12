@@ -1,51 +1,28 @@
-// cart.js
+// Importez la fonction à tester
+const { renderCartItems } = require('./cart'); // Ajustez le chemin d'importation en fonction de la structure réelle de vos fichiers
 
-const localStorageCartName = "cart";
+// Créez un conteneur factice pour le test
+document.body.innerHTML = '<div id="cart-container"></div>';
 
-const getCart = () => {
-  const cart = JSON.parse(localStorage.getItem(localStorageCartName)) || [];
-  return cart;
-};
+// Mock des données du panier
+const mockCart = [
+  { id: '1', name: 'Produit 1', price: 10, quantity: 2 },
+  { id: '2', name: 'Produit 2', price: 20, quantity: 1 },
+];
 
-const addToCart = (product) => {
-  const cart = getCart();
-  const index = cart.findIndex((p) => p.id === product.id);
+// Testez la fonction renderCartItems
+test('renderCartItems affiche correctement les articles dans le panier', () => {
+  // Appelez la fonction avec les données du panier simulées
+  renderCartItems(mockCart);
 
-  if (index === -1) {
-    cart.push({ ...product, quantity: 1 });
-  } else {
-    cart[index].quantity++;
-  }
+  // Vérifiez si les éléments ont été correctement ajoutés au conteneur
+  expect(document.getElementById('cart-container').childElementCount).toBe(mockCart.length);
 
-  localStorage.setItem(localStorageCartName, JSON.stringify(cart));
-};
-
-const removeFromCart = (product) => {
-  const cart = getCart();
-  const index = cart.findIndex((p) => p.id === product.id);
-
-  if (index !== -1) {
-    if (cart[index].quantity > 1) {
-      cart[index].quantity--;
-    } else {
-      cart.splice(index, 1);
-    }
-
-    localStorage.setItem(localStorageCartName, JSON.stringify(cart));
-  }
-};
-
-const clearCart = () => {
-  localStorage.removeItem(localStorageCartName);
-};
-
-const getTotals = () => {
-  const cart = getCart();
-
-  const total = cart.reduce((acc, product) => acc + product.price * product.quantity, 0);
-  const items = cart.reduce((acc, product) => acc + product.quantity, 0);
-
-  return { total, items };
-};
-
-module.exports = { getCart, addToCart, removeFromCart, clearCart, getTotals };
+  // Vérifiez si le contenu HTML des éléments correspond aux données du panier
+  mockCart.forEach((item) => {
+    const itemElement = document.querySelector(`#cart-container div:contains("${item.name}")`);
+    expect(itemElement).toBeTruthy();
+    expect(itemElement.innerHTML).toContain(`Prix: ${item.price}`);
+    expect(itemElement.innerHTML).toContain(`Quantité: ${item.quantity}`);
+  });
+});

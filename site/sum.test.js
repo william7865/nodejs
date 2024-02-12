@@ -1,60 +1,28 @@
+// Importez la fonction à tester
+const { renderCartItems } = require('./cart'); // Ajustez le chemin d'importation en fonction de la structure réelle de vos fichiers
 
-const { getCart, addToCart, removeFromCart, clearCart, getTotals } = require('./sum');
+// Créez un conteneur factice pour le test
+document.body.innerHTML = '<div id="cart-container"></div>';
 
-// Mock de localStorage pour simuler le comportement dans un environnement de test
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-};
+// Mock des données du panier
+const mockCart = [
+  { id: '1', name: 'Produit 1', price: 10, quantity: 2 },
+  { id: '2', name: 'Produit 2', price: 20, quantity: 1 },
+];
 
-global.localStorage = localStorageMock;
+// Testez la fonction renderCartItems
+test('renderCartItems affiche correctement les articles dans le panier', () => {
+  // Appelez la fonction avec les données du panier simulées
+  renderCartItems(mockCart);
 
-// Testez chaque fonction individuellement
+  // Vérifiez si les éléments ont été correctement ajoutés au conteneur
+  expect(document.getElementById('cart-container').childElementCount).toBe(mockCart.length);
 
-describe('getCart', () => {
-  it('returns an empty array if localStorage is empty', () => {
-    localStorage.getItem.mockReturnValueOnce(null);
-
-    const cart = getCart();
-
-    expect(cart).toEqual([]);
-    expect(localStorage.getItem).toHaveBeenCalledWith('cart');
+  // Vérifiez si le contenu HTML des éléments correspond aux données du panier
+  mockCart.forEach((item) => {
+    const itemElement = document.querySelector(`#cart-container div:contains("${item.name}")`);
+    expect(itemElement).toBeTruthy();
+    expect(itemElement.innerHTML).toContain(`Prix: ${item.price}`);
+    expect(itemElement.innerHTML).toContain(`Quantité: ${item.quantity}`);
   });
-
-  it('returns the parsed cart from localStorage', () => {
-    const mockCart = [{ id: '1', name: 'Product', price: 10, quantity: 2 }];
-    localStorage.getItem.mockReturnValueOnce(JSON.stringify(mockCart));
-
-    const cart = getCart();
-
-    expect(cart).toEqual(mockCart);
-    expect(localStorage.getItem).toHaveBeenCalledWith('cart');
-  });
-});
-
-describe('addToCart', () => {
-  it('adds a product to the cart', () => {
-    const mockProduct = { id: '1', name: 'New Product', price: 15 };
-    localStorage.getItem.mockReturnValueOnce(JSON.stringify([]));
-
-    addToCart(mockProduct);
-
-    expect(localStorage.getItem).toHaveBeenCalledWith('cart');
-    expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify([{ ...mockProduct, quantity: 1 }]));
-  });
-
-  // Add more test cases for different scenarios
-});
-
-describe('removeFromCart', () => {
-  // Add test cases for removeFromCart
-});
-
-describe('clearCart', () => {
-  // Add test cases for clearCart
-});
-
-describe('getTotals', () => {
-  // Add test cases for getTotals
 });
