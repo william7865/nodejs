@@ -1,28 +1,24 @@
-// Importez la fonction à tester
-const { renderCartItems } = require('./cart'); // Ajustez le chemin d'importation en fonction de la structure réelle de vos fichiers
+const renderCartItems = (cart) => {
+  const cartContainer = document.getElementById("cart-container");
 
-// Créez un conteneur factice pour le test
-document.body.innerHTML = '<div id="cart-container"></div>';
+  // Vérifie si le conteneur existe
+  if (!cartContainer) {
+    console.error("Le conteneur du panier n'a pas été trouvé dans le HTML.");
+    return;
+  }
 
-// Mock des données du panier
-const mockCart = [
-  { id: '1', name: 'Produit 1', price: 10, quantity: 2 },
-  { id: '2', name: 'Produit 2', price: 20, quantity: 1 },
-];
+  // Efface le contenu précédent du conteneur
+  cartContainer.innerHTML = "";
 
-// Testez la fonction renderCartItems
-test('renderCartItems affiche correctement les articles dans le panier', () => {
-  // Appelez la fonction avec les données du panier simulées
-  renderCartItems(mockCart);
+  // Parcours chaque article dans le panier
+  cart.forEach((item) => {
+    // Crée un élément div pour chaque article
+    const itemElement = document.createElement("div");
 
-  // Vérifiez si les éléments ont été correctement ajoutés au conteneur
-  expect(document.getElementById('cart-container').childElementCount).toBe(mockCart.length);
+    // Ajoute le contenu HTML avec les détails de l'article
+    itemElement.innerHTML = `<img src="../image/bijoux 2.jpg" height="80px"><p>Nom: ${item.name}</p><p>Prix: ${item.price}</p><p>Quantité: ${item.quantity}</p>`;
 
-  // Vérifiez si le contenu HTML des éléments correspond aux données du panier
-  mockCart.forEach((item) => {
-    const itemElement = document.querySelector(`#cart-container div:contains("${item.name}")`);
-    expect(itemElement).toBeTruthy();
-    expect(itemElement.innerHTML).toContain(`Prix: ${item.price}`);
-    expect(itemElement.innerHTML).toContain(`Quantité: ${item.quantity}`);
+    // Ajoute l'élément à la fin du conteneur
+    cartContainer.appendChild(itemElement);
   });
-});
+};
