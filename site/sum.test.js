@@ -1,21 +1,22 @@
-// Importez la fonction à tester
-const { renderCartItems } = require('./sum');
+// renderCartItems.test.js
+const { JSDOM } = require('jsdom');
+const { renderCartItems } = require('./sum'); // Assurez-vous d'ajuster le chemin d'importation en fonction de votre structure de fichiers
 
-// Testez la fonction renderCartItems
 test('renderCartItems affiche correctement les articles dans le panier', () => {
   // Créez un élément de conteneur factice pour le test
-  document.body.innerHTML = '<div id="cart-container"></div>';
+  const dom = new JSDOM('<div id="cart-container"></div>');
+  global.document = dom.window.document;
 
   // Mock des données du panier
   const mockCart = [
-    { name: 'Produit 1', price: 10, quantity: 2 },
-    { name: 'Produit 2', price: 15, quantity: 1 },
+    { name: 'Article 1', price: 10, quantity: 2 },
+    { name: 'Article 2', price: 15, quantity: 1 },
   ];
 
   // Exécutez la fonction à tester
   renderCartItems(mockCart);
 
-  // Vérifiez que le contenu du conteneur est correct
-  const cartContainer = document.getElementById('cart-container');
-  expect(cartContainer.innerHTML).toMatchSnapshot();
+  // Vérifiez si le contenu a été correctement généré dans le conteneur
+  const cartContainer = dom.window.document.getElementById('cart-container');
+  expect(cartContainer.innerHTML).toMatchSnapshot(); // Vous pouvez utiliser toEqual pour une correspondance exacte
 });
