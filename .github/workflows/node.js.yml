@@ -13,5 +13,7 @@ jobs:
           node-version: '20.x'
       - name: Install dependencies
         run: npm install
+      - name: Install testing dependencies
+        run: npm install --save-dev @testing-library/dom @testing-library/jest-dom jest
       - name: Run Jest tests
         run: npm run Node.js

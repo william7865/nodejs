@@ -2,7 +2,8 @@
   "name": "votre-projet",
   "version": "1.0.0",
   "scripts": {
-    "Node.js": "jest"
+    "Node.js": "jest",
+    "test":"jest"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
