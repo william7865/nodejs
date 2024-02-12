@@ -1,5 +1,5 @@
 // Importez la fonction à tester
-const { renderCartItems } = require('./cart'); // Ajustez le chemin d'importation en fonction de la structure réelle de vos fichiers
+const { renderCartItems } = require('./sum'); // Ajustez le chemin d'importation en fonction de la structure réelle de vos fichiers
 
 // Créez un conteneur factice pour le test
 document.body.innerHTML = '<div id="cart-container"></div>';
