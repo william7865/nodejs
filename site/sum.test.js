@@ -19,6 +19,8 @@ describe('renderCartItems', () => {
 
     // Vérifiez si le contenu a été correctement généré dans le conteneur
     const cartContainer = dom.window.document.getElementById('cart-container');
+
+    // Vérifiez si le contenu contient les informations des articles du panier
     expect(cartContainer.innerHTML).toContain('Article 1');
     expect(cartContainer.innerHTML).toContain('Article 2');
     expect(cartContainer.innerHTML).toContain('10');
