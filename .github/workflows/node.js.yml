@@ -16,4 +16,4 @@ jobs:
       - name: Install jsdom
         run: npm install --save-dev jsdom
       - name: Run Jest tests
-        run: npm run Node.js
+        run: npm test
