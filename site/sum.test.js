@@ -1,10 +1,12 @@
 // sum.test.js
 const { renderCartItems } = require('./sum');
+const { JSDOM } = require('jsdom');
 
 describe('renderCartItems', () => {
   test('affiche correctement les articles dans le panier', () => {
     // Créez un élément de conteneur factice pour le test
-    document.body.innerHTML = '<div id="cart-container"></div>';
+    const dom = new JSDOM('<body><div id="cart-container"></div></body>');
+    global.document = dom.window.document;
 
     // Mock des données du panier
     const mockCart = [
@@ -16,7 +18,7 @@ describe('renderCartItems', () => {
     renderCartItems(mockCart);
 
     // Vérifiez si le contenu a été correctement généré dans le conteneur
-    const cartContainer = document.getElementById('cart-container');
+    const cartContainer = dom.window.document.getElementById('cart-container');
     expect(cartContainer.innerHTML).toContain('Article 1');
     expect(cartContainer.innerHTML).toContain('Article 2');
     expect(cartContainer.innerHTML).toContain('10');
