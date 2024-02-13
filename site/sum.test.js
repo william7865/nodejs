@@ -9,7 +9,6 @@ test('renderCartItems affiche correctement les articles dans le panier', () => {
   const mockCart = [
     { name: 'Article 1', price: 10, quantity: 2 },
     { name: 'Article 2', price: 20, quantity: 1 },
-    // ... ajoutez d'autres articles au besoin
   ];
 
   // Exécutez la fonction à tester
