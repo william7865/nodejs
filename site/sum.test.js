@@ -1,13 +1,10 @@
+// sum.test.js
 const { renderCartItems } = require('./sum');
-const { JSDOM } = require('jsdom');
 
 describe('renderCartItems', () => {
   test('affiche correctement les articles dans le panier', () => {
-    // Créez un DOM factice pour le test
-    const dom = new JSDOM('<!DOCTYPE html><div id="cart-container"></div>');
-
-    // Attachez le DOM factice à la variable globale
-    global.document = dom.window.document;
+    // Créez un élément de conteneur factice pour le test
+    document.body.innerHTML = '<div id="cart-container"></div>';
 
     // Mock des données du panier
     const mockCart = [
