@@ -5,9 +5,6 @@
     "test": "jest"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "htmlhint": "^0.14.1",
-    "jest": "^29.7.0",
-    "jsdom": "^18.0.0" 
+    "jest": "^29.7.0"
   }
 }

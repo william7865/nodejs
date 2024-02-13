@@ -1,5 +1,4 @@
-name: Node.js CI
-
+# Node.js CI
 on: [push]
 
 jobs:
@@ -10,10 +9,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '14'
       - name: Install dependencies
         run: npm install
-      - name: Install jsdom
-        run: npm install --save-dev jsdom
       - name: Run Jest tests
         run: npm test
