@@ -2,7 +2,6 @@ const { JSDOM } = require('jsdom');
 const { renderCartItems } = require('./sum');
 
 test('renderCartItems affiche correctement les articles dans le panier', () => {
-  // Créez un élément de conteneur factice pour le test
   const dom = new JSDOM('<div id="cart-container"></div>');
 
   // Mock des données du panier
