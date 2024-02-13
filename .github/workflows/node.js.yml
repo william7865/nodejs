@@ -13,7 +13,5 @@ jobs:
           node-version: '20.x'
       - name: Install dependencies
         run: npm install
-      - name: Install jsdom
-        run: npm install --save-dev jsdom
       - name: Run Jest tests
         run: npm test
